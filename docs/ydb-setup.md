@@ -45,16 +45,19 @@ It creates:
 After creating a YDB database in Yandex Cloud, apply:
 
 ```bash
-ydb -e "$YDB_ENDPOINT" -d "$YDB_DATABASE" scripting yql -f infra/ydb/schema.sql
+ydb -e "$YDB_ENDPOINT" -d "$YDB_DATABASE" sql -f infra/ydb/schema.sql
 ```
 
 For demo data:
 
 ```bash
-ydb -e "$YDB_ENDPOINT" -d "$YDB_DATABASE" scripting yql -f infra/ydb/seed.example.sql
+ydb -e "$YDB_ENDPOINT" -d "$YDB_DATABASE" sql -f infra/ydb/seed.example.sql
 ```
 
 The exact `YDB_ENDPOINT` and `YDB_DATABASE` values are copied from the Yandex Cloud YDB database page.
+
+The demo seed loads member profiles only. NFC card URLs should be generated
+through the admin UI after the API Gateway technical domain is known.
 
 ## MVP Query Model
 

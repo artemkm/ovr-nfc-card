@@ -9,5 +9,9 @@
   },
   "engines": {
     "node": ">=22"
+  },
+  "dependencies": {
+    "@yandex-cloud/nodejs-sdk": "^2.9.3",
+    "ydb-sdk": "^5.11.1"
   }
 }

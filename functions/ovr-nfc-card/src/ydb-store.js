@@ -305,25 +305,38 @@ function loadYdbSdk() {
 }
 
 async function executeQuery(driver, query, params = {}) {
+  const sdk = loadYdbSdk();
+
   if (!driver.tableClient || typeof driver.tableClient.withSession !== 'function') {
     throw new Error('Unsupported ydb-sdk Driver API. Check installed ydb-sdk version.');
   }
 
   return driver.tableClient.withSession(async (session) => {
     const result = await session.executeQuery(query, params);
-    return normalizeResultRows(result);
+    return normalizeResultRows(sdk, result);
   });
 }
 
 function typedValue(type, value) {
-  // The exact YDB SDK helpers are resolved at runtime when the package is installed.
-  // Keeping plain tagged values here lets local mode stay dependency-free.
-  return { type, value };
+  const sdk = loadYdbSdk();
+
+  switch (type) {
+    case 'Bool':
+      return sdk.TypedValues.bool(Boolean(value));
+    case 'Timestamp':
+      return sdk.TypedValues.timestamp(value instanceof Date ? value : new Date(value));
+    case 'Uint64':
+      return sdk.TypedValues.uint64(Number(value));
+    case 'Utf8':
+      return sdk.TypedValues.utf8(String(value));
+    default:
+      throw new Error(`Unsupported YDB parameter type: ${type}`);
+  }
 }
 
-function normalizeResultRows(result) {
-  if (Array.isArray(result?.resultSets?.[0]?.rows)) {
-    return result.resultSets[0].rows;
+function normalizeResultRows(sdk, result) {
+  if (result?.resultSets?.[0]) {
+    return sdk.TypedData.createNativeObjects(result.resultSets[0]);
   }
 
   if (Array.isArray(result?.sets?.[0]?.rows)) {
@@ -379,4 +392,3 @@ module.exports = {
   touchCardScan,
   upsertCard
 };
-

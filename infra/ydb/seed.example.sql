@@ -1,5 +1,6 @@
 -- Example seed data for a demo YDB database.
--- Replace values before using in a real demonstration.
+-- It loads demo member profiles only. NFC cards should be generated through
+-- the admin UI after BASE_PUBLIC_URL is known.
 
 UPSERT INTO member_profiles (
   member_number,
@@ -42,27 +43,32 @@ UPSERT INTO member_profiles (
   "10002 петрова анна викторовна невролог врач-невролог санкт-петербург",
   CurrentUtcTimestamp(),
   CurrentUtcTimestamp()
-);
-
-UPSERT INTO member_cards (
-  token,
-  member_number,
-  public_url,
-  status,
-  nfc_uid,
-  created_at,
-  updated_at,
-  last_seen_at,
-  scan_count
-) VALUES (
-  "demo-card-ivanov-10001",
-  "10001",
-  "https://<gateway-id>.apigw.yandexcloud.net/c/demo-card-ivanov-10001",
-  "active",
+),
+(
+  "10003",
+  3,
+  "Смирнов Алексей Олегович",
+  "Терапевт",
+  "Главный врач",
+  "Казань",
+  "+7 843 000-00-03",
   "",
+  true,
+  "10003 смирнов алексей олегович терапевт главный врач казань",
   CurrentUtcTimestamp(),
+  CurrentUtcTimestamp()
+),
+(
+  "10004",
+  4,
+  "Кузнецова Мария Андреевна",
+  "Педиатр",
+  "Врач-педиатр",
+  "Екатеринбург",
+  "",
+  "",
+  false,
+  "10004 кузнецова мария андреевна педиатр врач-педиатр екатеринбург",
   CurrentUtcTimestamp(),
-  NULL,
-  0
+  CurrentUtcTimestamp()
 );
-

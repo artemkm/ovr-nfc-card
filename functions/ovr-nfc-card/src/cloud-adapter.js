@@ -24,6 +24,7 @@ function createRequest(event) {
   req.method = getMethod(event);
   req.url = getUrl(event);
   req.headers = normalizeHeaders(event.headers || {});
+  console.log(`HTTP ${req.method} ${req.url}`);
 
   return req;
 }
@@ -66,7 +67,14 @@ function getMethod(event) {
 }
 
 function getUrl(event) {
-  const rawPath = event.path || event.rawPath || event.url || '/';
+  const rawPath = event.url
+    || event.rawPath
+    || pathFromTemplate(event)
+    || event.path
+    || event.requestContext?.http?.path
+    || event.requestContext?.path
+    || pathFromParameters(event)
+    || '/';
 
   if (rawPath.includes('?')) {
     return rawPath;
@@ -83,6 +91,32 @@ function getUrl(event) {
 
   const queryString = params.toString();
   return queryString ? `${rawPath}?${queryString}` : rawPath;
+}
+
+function pathFromTemplate(event) {
+  if (!event.path || !event.path.includes('{') || !event.pathParameters) {
+    return '';
+  }
+
+  let path = event.path;
+
+  Object.entries(event.pathParameters).forEach(([key, value]) => {
+    const encodedValue = encodeURI(String(value || ''));
+    path = path.replace(`{${key}}`, encodedValue);
+    path = path.replace(`{${key}+}`, encodedValue);
+  });
+
+  return path.includes('{') ? '' : path;
+}
+
+function pathFromParameters(event) {
+  const proxyPath = event.pathParameters?.path || event.pathParameters?.proxy;
+
+  if (!proxyPath) {
+    return '';
+  }
+
+  return proxyPath.startsWith('/') ? proxyPath : `/${proxyPath}`;
 }
 
 function decodeBody(event) {
@@ -111,4 +145,3 @@ function isTextContent(contentType) {
 }
 
 module.exports = { createCloudHandler };
-

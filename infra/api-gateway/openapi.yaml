@@ -1,0 +1,25 @@
+openapi: 3.0.0
+info:
+  title: OVR NFC Card MVP
+  version: 0.1.0
+paths:
+  /:
+    x-yc-apigateway-any-method:
+      x-yc-apigateway-integration:
+        type: cloud_functions
+        function_id: d4e35tml4p745rd5hv82
+        service_account_id: aje97i60cmrjcdn9kokn
+        tag: "$latest"
+  /{path+}:
+    x-yc-apigateway-any-method:
+      parameters:
+        - name: path
+          in: path
+          required: true
+          schema:
+            type: string
+      x-yc-apigateway-integration:
+        type: cloud_functions
+        function_id: d4e35tml4p745rd5hv82
+        service_account_id: aje97i60cmrjcdn9kokn
+        tag: "$latest"

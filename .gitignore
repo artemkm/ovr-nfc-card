@@ -1,3 +1,4 @@
 data/local-db.json
 node_modules/
+.env.cloud.local
 .DS_Store
