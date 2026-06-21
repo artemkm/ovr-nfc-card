@@ -22,8 +22,8 @@ function layout(title, body) {
       --text: #1d2429;
       --muted: #64727d;
       --line: #d8e0e5;
-      --brand: #0f766e;
-      --brand-dark: #115e59;
+      --brand: #0076bd;
+      --brand-dark: #005f98;
       --danger: #b42318;
       --ok-bg: #dff4ee;
       --warn-bg: #fff1d6;
@@ -91,6 +91,27 @@ function layout(title, body) {
       margin-bottom: 18px;
     }
 
+    .brand-lockup {
+      display: flex;
+      align-items: flex-start;
+      gap: 22px;
+      min-width: 0;
+    }
+
+    .brand-logo {
+      width: auto;
+      max-width: 94px;
+      max-height: 32px;
+      height: auto;
+      flex: 0 0 auto;
+      display: block;
+    }
+
+    .brand-title {
+      color: var(--brand);
+      margin-bottom: 4px;
+    }
+
     h1, h2, h3, p { margin-top: 0; }
     h1 { font-size: 28px; line-height: 1.15; margin-bottom: 8px; }
     h2 { font-size: 22px; margin-bottom: 14px; }
@@ -144,6 +165,13 @@ function layout(title, body) {
       margin-top: 18px;
     }
 
+    .pager {
+      display: grid;
+      grid-template-columns: auto auto auto;
+      gap: 10px;
+      align-items: center;
+    }
+
     .result {
       display: grid;
       grid-template-columns: minmax(0, 1fr) auto;
@@ -189,6 +217,27 @@ function layout(title, body) {
       .page { width: min(100% - 20px, 960px); padding-top: 16px; }
       .surface { padding: 16px; }
       .topbar { align-items: flex-start; flex-direction: column; }
+      .brand-lockup { flex-direction: column; gap: 8px; }
+      .brand-logo { max-width: 104px; max-height: 36px; }
+      .list-head { align-items: stretch; flex-direction: column; }
+      .pager {
+        grid-template-columns: 1fr 1fr;
+        width: 100%;
+      }
+      .pager #pageInfo {
+        grid-column: 1 / -1;
+        grid-row: 1;
+      }
+      .pager #prevPage {
+        grid-column: 1;
+        grid-row: 2;
+        justify-self: start;
+      }
+      .pager #nextPage {
+        grid-column: 2;
+        grid-row: 2;
+        justify-self: end;
+      }
       .grid { grid-template-columns: 1fr; }
       .url-row { grid-template-columns: 1fr; }
       .result { grid-template-columns: 1fr; }
@@ -204,8 +253,13 @@ function renderLoginPage(error = '') {
   return layout('Вход в админку ОВР NFC', `
     <main class="page">
       <section class="surface login">
-        <h1>ОВР NFC</h1>
-        <p class="muted">Техническая админка MVP</p>
+        <div class="brand-lockup" style="margin-bottom: 14px;">
+          <img class="brand-logo" src="/assets/ovr-logo.png" alt="Общество врачей России">
+          <div>
+            <h1 class="brand-title">ОВР NFC</h1>
+            <p class="muted" style="margin-bottom: 0;">Техническая админка MVP</p>
+          </div>
+        </div>
         ${error ? `<p class="error">${escapeHtml(error)}</p>` : ''}
         <form method="post" action="/admin/login">
           <label>
@@ -227,9 +281,12 @@ function renderAdminPage() {
   return layout('Админка ОВР NFC', `
     <main class="page">
       <div class="topbar">
-        <div>
-          <h1>ОВР NFC</h1>
-          <p class="muted">Поиск участника и выпуск NFC-ссылки</p>
+        <div class="brand-lockup">
+          <img class="brand-logo" src="/assets/ovr-logo.png" alt="Общество врачей России">
+          <div>
+            <h1 class="brand-title">ОВР NFC</h1>
+            <p class="muted">Поиск участника и выпуск NFC-ссылки</p>
+          </div>
         </div>
         <form method="post" action="/admin/logout">
           <button class="secondary small" type="submit">Выйти</button>
@@ -241,7 +298,7 @@ function renderAdminPage() {
         <input id="searchInput" type="search" placeholder="ФИО, членский номер, специальность или город" autocomplete="off">
         <div class="list-head">
           <div id="searchHint" class="muted">Все участники в порядке добавления в базу.</div>
-          <div id="pager" class="actions" style="margin-top: 0;">
+          <div id="pager" class="pager">
             <button id="prevPage" class="secondary small" type="button">Назад</button>
             <span id="pageInfo" class="muted"></span>
             <button id="nextPage" class="secondary small" type="button">Вперед</button>
