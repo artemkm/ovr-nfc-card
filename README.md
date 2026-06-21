@@ -68,7 +68,16 @@ Cloud Function режим:
 cloud.js -> handler(event) -> общий router -> хранилище по STORAGE
 ```
 
-На текущем шаге cloud-entrypoint уже добавлен, но хранилище по умолчанию остается локальным. YDB подключается следующим отдельным шагом.
+Хранилище выбирается через `STORAGE`:
+
+```text
+STORAGE=local -> src/local-store.js -> data/local-db.json
+STORAGE=ydb   -> src/ydb-store.js -> YDB_ENDPOINT/YDB_DATABASE
+```
+
+Локальный режим остается режимом по умолчанию.
+
+Для `STORAGE=ydb` нужен установленный пакет `ydb-sdk` и настроенная авторизация Yandex Cloud.
 
 Будущий entrypoint для Yandex Cloud Function:
 

@@ -6,6 +6,7 @@
 docs/
   mvp-plan.md
   project-structure.md
+  ydb-setup.md
 
 functions/
   ovr-nfc-card/
@@ -19,7 +20,9 @@ functions/
       html.js
       http.js
       cloud-adapter.js
+      store.js
       local-store.js
+      ydb-store.js
       tokens.js
       handlers/
         public-card.js
@@ -33,6 +36,11 @@ functions/
 data/
   sample-members.json
   local-db.json       локальный рабочий файл, не коммитится
+
+infra/
+  ydb/
+    schema.sql
+    seed.example.sql
 
 README.md
 .env.example
@@ -62,9 +70,6 @@ functions/
       ydb.js
 
 infra/
-  ydb/
-    schema.sql
-    seed.example.sql
   api-gateway/
     openapi.yaml
 

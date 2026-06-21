@@ -1,8 +1,9 @@
-const { findPublicCard, touchCardScan } = require('../local-store');
+const { getStore } = require('../store');
 const { sendHtml } = require('../http');
 const { renderMessagePage, renderPublicCardPage } = require('../html');
 
 async function handlePublicCard(req, res, config, token) {
+  const { findPublicCard, touchCardScan } = getStore(config);
   const result = await findPublicCard(config, token);
 
   if (!result || !result.card || !result.profile) {
@@ -20,4 +21,3 @@ async function handlePublicCard(req, res, config, token) {
 }
 
 module.exports = { handlePublicCard };
-
