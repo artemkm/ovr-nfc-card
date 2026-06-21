@@ -576,7 +576,6 @@ function renderPublicCardPage(profile, card) {
           ${profile.public_phone ? `<div class="field"><span>Телефон</span>${escapeHtml(profile.public_phone)}</div>` : ''}
           ${profile.public_email ? `<div class="field"><span>Email</span>${escapeHtml(profile.public_email)}</div>` : ''}
         </div>
-        <p class="muted" style="margin-top: 20px;">NFC-карта проверена. Открытий: ${Number(card.scan_count || 0) + 1}</p>
       </section>
     </main>
   `);

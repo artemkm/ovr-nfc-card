@@ -54,6 +54,28 @@ http://localhost:3000/c/{token}
 При первом запуске локальная база создается из `data/sample-members.json` в `data/local-db.json`.
 Файл `data/local-db.json` не коммитится и используется только для локальных проверок.
 
+## Режимы запуска
+
+Локальный режим:
+
+```text
+index.js -> http://localhost:3000 -> STORAGE=local -> data/local-db.json
+```
+
+Cloud Function режим:
+
+```text
+cloud.js -> handler(event) -> общий router -> хранилище по STORAGE
+```
+
+На текущем шаге cloud-entrypoint уже добавлен, но хранилище по умолчанию остается локальным. YDB подключается следующим отдельным шагом.
+
+Будущий entrypoint для Yandex Cloud Function:
+
+```text
+cloud.handler
+```
+
 ## GitHub
 
 Репозиторий:

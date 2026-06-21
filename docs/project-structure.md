@@ -11,12 +11,14 @@ functions/
   ovr-nfc-card/
     package.json
     index.js
+    cloud.js
     src/
       config.js
       router.js
       auth.js
       html.js
       http.js
+      cloud-adapter.js
       local-store.js
       tokens.js
       handlers/
