@@ -1,11 +1,11 @@
 # Структура проекта
 
+## Текущая структура
+
 ```text
 docs/
   mvp-plan.md
   project-structure.md
-  nfc-process.md
-  yandex-deploy.md
 
 functions/
   ovr-nfc-card/
@@ -16,13 +16,48 @@ functions/
       router.js
       auth.js
       html.js
-      ydb.js
+      http.js
+      local-store.js
       tokens.js
       handlers/
         public-card.js
         admin-auth.js
         admin-page.js
         admin-api.js
+    public/
+      assets/
+        ovr-logo.png
+
+data/
+  sample-members.json
+  local-db.json       локальный рабочий файл, не коммитится
+
+README.md
+.env.example
+.gitignore
+```
+
+## Назначение папок
+
+`docs/` хранит проектные решения, инструкции по NFC, деплою и эксплуатации MVP.
+
+`functions/ovr-nfc-card/` содержит Node.js функцию, которая будет обслуживать публичную карточку и техническую админку.
+
+`data/` содержит локальные тестовые данные для разработки до подключения YDB.
+
+## Планируемая структура для Yandex Cloud
+
+Эти файлы будут добавлены на следующем этапе, когда начнем переносить локальный прототип в облако:
+
+```text
+docs/
+  nfc-process.md
+  yandex-deploy.md
+
+functions/
+  ovr-nfc-card/
+    src/
+      ydb.js
 
 infra/
   ydb/
@@ -35,25 +70,4 @@ scripts/
   create-test-profile.js
   generate-card-url.js
   import-members.js
-
-data/
-  sample-members.json
-
-README.md
-.env.example
 ```
-
-## Назначение папок
-
-`docs/` хранит проектные решения, инструкции по NFC, деплою и эксплуатации MVP.
-
-`functions/ovr-nfc-card/` содержит Node.js функцию, которая будет обслуживать публичную карточку и техническую админку.
-
-`infra/ydb/` содержит SQL-схему YDB и пример тестовых данных.
-
-`infra/api-gateway/` содержит конфигурацию Yandex API Gateway.
-
-`scripts/` содержит вспомогательные локальные скрипты для импорта участников, генерации тестовых записей и обслуживания MVP.
-
-`data/` содержит локальные тестовые данные для разработки до подключения YDB.
-
