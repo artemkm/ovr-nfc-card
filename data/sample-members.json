@@ -1,0 +1,65 @@
+{
+  "profiles": [
+    {
+      "member_number": "10001",
+      "full_name": "Иванов Иван Сергеевич",
+      "specialty": "Кардиолог",
+      "position": "Заведующий кардиологическим отделением",
+      "city": "Москва",
+      "public_phone": "+7 495 000-00-01",
+      "public_email": "ivanov@example.ru",
+      "is_active_member": true,
+      "created_at": "2026-06-21T00:00:00.000Z",
+      "updated_at": "2026-06-21T00:00:00.000Z"
+    },
+    {
+      "member_number": "10002",
+      "full_name": "Петрова Анна Викторовна",
+      "specialty": "Невролог",
+      "position": "Врач-невролог",
+      "city": "Санкт-Петербург",
+      "public_phone": "",
+      "public_email": "petrova@example.ru",
+      "is_active_member": true,
+      "created_at": "2026-06-21T00:00:00.000Z",
+      "updated_at": "2026-06-21T00:00:00.000Z"
+    },
+    {
+      "member_number": "10003",
+      "full_name": "Смирнов Алексей Олегович",
+      "specialty": "Терапевт",
+      "position": "Главный врач",
+      "city": "Казань",
+      "public_phone": "+7 843 000-00-03",
+      "public_email": "",
+      "is_active_member": true,
+      "created_at": "2026-06-21T00:00:00.000Z",
+      "updated_at": "2026-06-21T00:00:00.000Z"
+    },
+    {
+      "member_number": "10004",
+      "full_name": "Кузнецова Мария Андреевна",
+      "specialty": "Педиатр",
+      "position": "Врач-педиатр",
+      "city": "Екатеринбург",
+      "public_phone": "",
+      "public_email": "",
+      "is_active_member": false,
+      "created_at": "2026-06-21T00:00:00.000Z",
+      "updated_at": "2026-06-21T00:00:00.000Z"
+    }
+  ],
+  "cards": [
+    {
+      "member_number": "10001",
+      "token": "demo-card-ivanov-10001",
+      "public_url": "http://localhost:3000/c/demo-card-ivanov-10001",
+      "status": "active",
+      "nfc_uid": "",
+      "created_at": "2026-06-21T00:00:00.000Z",
+      "updated_at": "2026-06-21T00:00:00.000Z",
+      "last_seen_at": "",
+      "scan_count": 0
+    }
+  ]
+}
