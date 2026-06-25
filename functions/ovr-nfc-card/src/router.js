@@ -13,7 +13,7 @@ const {
   handleUploadMemberPhoto,
   handleSearch
 } = require('./handlers/admin-api');
-const { handlePublicCard } = require('./handlers/public-card');
+const { handlePublicCard, handlePublicContact } = require('./handlers/public-card');
 
 async function route(req, res, config) {
   const url = new URL(req.url, config.basePublicUrl);
@@ -73,6 +73,12 @@ async function route(req, res, config) {
     }
 
     await routeAdminApi(req, res, config, url, pathname);
+    return;
+  }
+
+  const publicContactMatch = pathname.match(/^\/c\/([^/]+)\/contact\.vcf$/);
+  if (req.method === 'GET' && publicContactMatch) {
+    await handlePublicContact(req, res, config, publicContactMatch[1]);
     return;
   }
 

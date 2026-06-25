@@ -230,6 +230,29 @@ function layout(title, body) {
       margin-top: 16px;
     }
 
+    .contact-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      width: fit-content;
+      border-radius: 6px;
+      padding: 10px 14px;
+      background: var(--brand);
+      color: #fff;
+      text-decoration: none;
+      min-height: 40px;
+    }
+
+    .contact-link:hover {
+      background: var(--brand-dark);
+    }
+
+    .contact-link svg {
+      width: 18px;
+      height: 18px;
+      flex: 0 0 auto;
+    }
+
     .url-row {
       display: grid;
       grid-template-columns: minmax(0, 1fr) auto;
@@ -778,6 +801,7 @@ function renderAdminPage() {
 function renderPublicCardPage(profile, card) {
   const memberStatus = profile.is_active_member ? 'Действующий член общества' : 'Членство неактивно';
   const cardPrintNumber = formatCardPrintNumber(profile.member_number);
+  const contactUrl = `/c/${encodeURIComponent(card.token)}/contact.vcf`;
   const qrBlock = card.qr_svg
     ? `<div class="qr-block">
         <h2>QR-код визитки</h2>
@@ -810,6 +834,17 @@ function renderPublicCardPage(profile, card) {
           <div class="field"><span>Город</span>${escapeHtml(profile.city)}</div>
           ${profile.public_phone ? `<div class="field"><span>Телефон</span>${escapeHtml(profile.public_phone)}</div>` : ''}
           ${profile.public_email ? `<div class="field"><span>Email</span>${escapeHtml(profile.public_email)}</div>` : ''}
+        </div>
+        <div class="actions">
+          <a class="contact-link" href="${escapeAttr(contactUrl)}">
+            <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+              <circle cx="9" cy="7" r="4"></circle>
+              <line x1="19" y1="8" x2="19" y2="14"></line>
+              <line x1="22" y1="11" x2="16" y2="11"></line>
+            </svg>
+            <span>Добавить в контакты</span>
+          </a>
         </div>
         ${qrBlock}
       </section>
