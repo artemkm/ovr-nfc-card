@@ -168,6 +168,27 @@ function layout(title, body) {
       margin-top: 12px;
     }
 
+    .qr-block {
+      display: grid;
+      justify-items: center;
+      gap: 8px;
+      margin-top: 20px;
+      padding-top: 18px;
+      border-top: 1px solid var(--line);
+      text-align: center;
+    }
+
+    .qr-code {
+      width: min(260px, 70vw);
+      aspect-ratio: 1;
+    }
+
+    .qr-code svg {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+
     .result-list {
       display: grid;
       gap: 8px;
@@ -478,6 +499,7 @@ function renderAdminPage() {
         const card = data.card;
         const hasCard = Boolean(card && card.status === 'active');
         const cardPrintNumber = formatCardPrintNumber(profile.member_number);
+        const hasQrCode = Boolean(card && card.qr_svg);
 
         memberNfcBadge.className = 'badge ' + (hasCard ? 'ok' : 'no');
         memberNfcBadge.textContent = hasCard ? 'NFC есть' : 'NFC нет';
@@ -486,14 +508,23 @@ function renderAdminPage() {
           ['Членский номер', profile.member_number],
           ['Номер на пластиковой карте', cardPrintNumber || 'Не задан'],
           ['Специальность', profile.specialty],
+          ['Научное звание', profile.scientific_title || '-'],
+          ['Научная степень', profile.academic_degree || '-'],
           ['Должность', profile.position],
           ['Город', profile.city],
           ['Телефон', profile.public_phone || 'Не указан'],
           ['Email', profile.public_email || 'Не указан'],
-          ['Статус членства', profile.is_active_member ? 'Активен' : 'Неактивен']
+          ['Статус членства', profile.is_active_member ? 'Действующий член' : 'Членство неактивно']
         ];
 
         const publicUrl = hasCard ? card.public_url : '';
+        const qrBlock = hasCard
+          ? '<div class="qr-block">' +
+              '<h3>QR-код визитки</h3>' +
+              '<div class="qr-code">' + (hasQrCode ? card.qr_svg : '') + '</div>' +
+              '<span class="muted">' + (hasQrCode ? 'QR-код сгенерирован' : 'QR-код не сгенерирован') + '</span>' +
+            '</div>'
+          : '';
         const cardBlock = hasCard
           ? '<h3>NFC-ссылка</h3>' +
             '<div class="url-row">' +
@@ -503,7 +534,8 @@ function renderAdminPage() {
             '<div class="actions">' +
               '<button id="regenerateButton" class="danger" type="button">Перегенерировать</button>' +
               '<span class="muted">Сканирований: ' + Number(card.scan_count || 0) + '</span>' +
-            '</div>'
+            '</div>' +
+            qrBlock
           : '<div class="actions"><button id="generateButton" type="button">Сгенерировать NFC</button></div>';
 
         memberCard.innerHTML =
@@ -581,8 +613,14 @@ function renderAdminPage() {
 }
 
 function renderPublicCardPage(profile, card) {
-  const memberStatus = profile.is_active_member ? 'Активный член общества' : 'Членство неактивно';
+  const memberStatus = profile.is_active_member ? 'Действующий член общества' : 'Членство неактивно';
   const cardPrintNumber = formatCardPrintNumber(profile.member_number);
+  const qrBlock = card.qr_svg
+    ? `<div class="qr-block">
+        <h2>QR-код визитки</h2>
+        <div class="qr-code">${card.qr_svg}</div>
+      </div>`
+    : '';
 
   return layout(`${profile.full_name} | ОВР`, `
     <main class="page">
@@ -600,12 +638,14 @@ function renderPublicCardPage(profile, card) {
         <div class="grid">
           <div class="field"><span>Членский номер</span>${escapeHtml(profile.member_number)}</div>
           ${cardPrintNumber ? `<div class="field"><span>Номер на пластиковой карте</span>${escapeHtml(cardPrintNumber)}</div>` : ''}
-          <div class="field"><span>Специальность</span>${escapeHtml(profile.specialty)}</div>
+          <div class="field"><span>Научное звание</span>${escapeHtml(profile.scientific_title || '-')}</div>
+          <div class="field"><span>Научная степень</span>${escapeHtml(profile.academic_degree || '-')}</div>
           <div class="field"><span>Должность</span>${escapeHtml(profile.position)}</div>
           <div class="field"><span>Город</span>${escapeHtml(profile.city)}</div>
           ${profile.public_phone ? `<div class="field"><span>Телефон</span>${escapeHtml(profile.public_phone)}</div>` : ''}
           ${profile.public_email ? `<div class="field"><span>Email</span>${escapeHtml(profile.public_email)}</div>` : ''}
         </div>
+        ${qrBlock}
       </section>
     </main>
   `);

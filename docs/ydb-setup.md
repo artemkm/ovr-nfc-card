@@ -16,11 +16,13 @@ STORAGE=ydb
 
 `BASE_PUBLIC_URL` must be set separately to the API Gateway technical domain.
 
-The Node.js application uses `src/ydb-store.js` when `STORAGE=ydb`. The YDB SDK package is loaded lazily, so local mode does not need it. Before deploying with YDB, install and verify the SDK:
+The Node.js application uses `src/ydb-store.js` when `STORAGE=ydb`. Before
+deploying with YDB, install dependencies and verify the function package:
 
 ```bash
 cd functions/ovr-nfc-card
-npm install ydb-sdk
+npm install
+npm run check
 ```
 
 ## Tables
@@ -38,7 +40,15 @@ It creates:
 
 `member_profiles` stores public profile data and a `display_order` field for the admin list order.
 
-`member_cards` stores the active public token and generated URL. The primary key is `token`, because public NFC scans resolve by token. A secondary index on `member_number` lets the admin UI find the current card for a member.
+`member_profiles` also stores optional scientific fields:
+
+- `scientific_title`
+- `academic_degree`
+
+`member_cards` stores the active public token, generated URL, and generated QR
+SVG. The primary key is `token`, because public NFC scans resolve by token. A
+secondary index on `member_number` lets the admin UI find the current card for a
+member.
 
 `member_number` is stored in canonical form:
 
@@ -98,6 +108,8 @@ Card generation:
 ```text
 POST /admin/api/members/{member_number}/card/generate
 -> create random token
+-> build public_url
+-> generate QR SVG from public_url
 -> write member_cards row
 ```
 
@@ -107,7 +119,7 @@ Card regeneration:
 POST /admin/api/members/{member_number}/card/regenerate
 -> find current card by member_number
 -> delete old token row
--> insert new token row
+-> insert new token row with new QR SVG
 ```
 
 ## Notes
@@ -115,4 +127,5 @@ POST /admin/api/members/{member_number}/card/regenerate
 - Do not store personal data on NFC tags.
 - Do not use NFC UID as a secret.
 - Keep `public_url` as a full ready-to-copy URL.
+- Keep `qr_svg` as generated SVG for the same `public_url`.
 - For this MVP, old regenerated tokens stop working because the old `member_cards` row is deleted.

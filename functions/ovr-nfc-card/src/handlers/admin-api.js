@@ -1,6 +1,7 @@
 const { buildPublicUrl, generateToken } = require('../tokens');
 const { getStore } = require('../store');
 const { sendJson } = require('../http');
+const { generateQrSvg } = require('../qr');
 
 async function handleListMembers(req, res, config, url) {
   const { listMembers } = getStore(config);
@@ -29,9 +30,11 @@ async function handleGetMember(req, res, config, memberNumber) {
 async function handleGenerateCard(req, res, config, memberNumber) {
   const { upsertCard } = getStore(config);
   const token = generateToken();
+  const publicUrl = buildPublicUrl(config.basePublicUrl, token);
   const result = await upsertCard(config, memberNumber, {
     token,
-    public_url: buildPublicUrl(config.basePublicUrl, token)
+    public_url: publicUrl,
+    qr_svg: await generateQrSvg(publicUrl)
   });
 
   if (!result) {

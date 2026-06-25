@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@yandex-cloud/nodejs-sdk": "^2.9.3",
+    "qrcode": "^1.5.4",
     "ydb-sdk": "^5.11.1"
   }
 }

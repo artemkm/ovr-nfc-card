@@ -126,6 +126,7 @@ async function upsertCard(config, memberNumber, cardData) {
     member_number: memberNumber,
     token: cardData.token,
     public_url: cardData.public_url,
+    qr_svg: cardData.qr_svg || '',
     status: 'active',
     nfc_uid: existing ? existing.nfc_uid || '' : '',
     created_at: existing ? existing.created_at : now,

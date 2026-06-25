@@ -153,6 +153,7 @@ async function upsertCard(config, memberNumber, cardData) {
     DECLARE $token AS Utf8;
     DECLARE $member_number AS Utf8;
     DECLARE $public_url AS Utf8;
+    DECLARE $qr_svg AS Utf8;
     DECLARE $status AS Utf8;
     DECLARE $nfc_uid AS Utf8;
     DECLARE $created_at AS Timestamp;
@@ -163,6 +164,7 @@ async function upsertCard(config, memberNumber, cardData) {
       token,
       member_number,
       public_url,
+      qr_svg,
       status,
       nfc_uid,
       created_at,
@@ -172,6 +174,7 @@ async function upsertCard(config, memberNumber, cardData) {
       $token,
       $member_number,
       $public_url,
+      $qr_svg,
       $status,
       $nfc_uid,
       $created_at,
@@ -182,6 +185,7 @@ async function upsertCard(config, memberNumber, cardData) {
     $token: typedValue('Utf8', cardData.token),
     $member_number: typedValue('Utf8', memberNumber),
     $public_url: typedValue('Utf8', cardData.public_url),
+    $qr_svg: typedValue('Utf8', cardData.qr_svg || ''),
     $status: typedValue('Utf8', 'active'),
     $nfc_uid: typedValue('Utf8', existing ? existing.nfc_uid || '' : ''),
     $created_at: typedValue('Timestamp', existing ? existing.created_at : now),
@@ -210,6 +214,7 @@ async function upsertCard(config, memberNumber, cardData) {
       member_number: memberNumber,
       token: cardData.token,
       public_url: cardData.public_url,
+      qr_svg: cardData.qr_svg || '',
       status: 'active',
       nfc_uid: existing ? existing.nfc_uid || '' : '',
       created_at: existing ? existing.created_at : now.toISOString(),
