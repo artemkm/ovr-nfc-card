@@ -13,6 +13,7 @@ CREATE TABLE IF NOT EXISTS member_profiles (
   academic_degree Utf8,
   position Utf8,
   city Utf8,
+  photo_url Utf8,
   public_phone Utf8,
   public_email Utf8,
   is_active_member Bool,

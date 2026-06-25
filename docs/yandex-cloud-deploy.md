@@ -49,11 +49,15 @@ yc serverless function version create \
   --runtime nodejs22 \
   --entrypoint cloud.handler \
   --memory 256MB \
-  --execution-timeout 10s \
+  --execution-timeout 30s \
   --service-account-id aje97i60cmrjcdn9kokn \
   --source-path /tmp/ovr-nfc-card-deploy \
   --environment STORAGE=ydb,YDB_ENDPOINT=grpcs://ydb.serverless.yandexcloud.net:2135,YDB_DATABASE=/ru-central1/b1gv7tfh65uutt1nbah0/etnjmojtve4d8pdmm44i,BASE_PUBLIC_URL=https://d5dqpbmoqisug9e3u251.avjje9e3.apigw.yandexcloud.net,ADMIN_USER=admin,ADMIN_PASSWORD=<from .env.cloud.local>,SESSION_SECRET=<from .env.cloud.local>
 ```
+
+For the Yandex Cloud MVP, uploaded member photos are stored in YDB as
+`data:image/...;base64,...` in `member_profiles.photo_url`. Local development
+continues to store uploaded photos as files under `data/uploads/`.
 
 ## API Gateway
 

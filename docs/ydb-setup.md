@@ -44,6 +44,12 @@ It creates:
 
 - `scientific_title`
 - `academic_degree`
+- `photo_url`
+
+In the Yandex Cloud MVP, uploaded profile photos are stored in `photo_url` as
+`data:image/...;base64,...`. This avoids relying on Cloud Function local files,
+which are not persistent between function instances. Local development keeps
+uploaded photos as files under `data/uploads/`.
 
 `member_cards` stores the active public token, generated URL, and generated QR
 SVG. The primary key is `token`, because public NFC scans resolve by token. A

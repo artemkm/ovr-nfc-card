@@ -150,6 +150,24 @@ async function upsertCard(config, memberNumber, cardData) {
   };
 }
 
+async function updateMemberPhoto(config, memberNumber, photoUrl) {
+  const data = await readData(config);
+  const profile = data.profiles.find((item) => item.member_number === memberNumber);
+
+  if (!profile) {
+    return null;
+  }
+
+  profile.photo_url = photoUrl;
+  profile.updated_at = new Date().toISOString();
+  await writeData(config, data);
+
+  return {
+    profile,
+    card: findCardByMemberNumber(data, memberNumber)
+  };
+}
+
 function findCardByMemberNumber(data, memberNumber) {
   return data.cards.find((item) => item.member_number === memberNumber) || null;
 }
@@ -173,5 +191,6 @@ module.exports = {
   listMembers,
   searchMembers,
   touchCardScan,
+  updateMemberPhoto,
   upsertCard
 };

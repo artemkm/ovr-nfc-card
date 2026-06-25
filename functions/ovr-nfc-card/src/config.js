@@ -14,6 +14,7 @@ function getConfig() {
     ydbEndpoint: process.env.YDB_ENDPOINT || '',
     ydbDatabase: process.env.YDB_DATABASE || '',
     dataFile: process.env.LOCAL_DATA_FILE || path.resolve(__dirname, '../../../data/local-db.json'),
+    uploadDir: process.env.LOCAL_UPLOAD_DIR || path.resolve(__dirname, '../../../data/uploads'),
     seedFile: path.resolve(__dirname, '../../../data/sample-members.json')
   };
 }

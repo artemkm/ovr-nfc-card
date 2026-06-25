@@ -9,6 +9,10 @@ function escapeHtml(value) {
     .replaceAll("'", '&#039;');
 }
 
+function escapeAttr(value) {
+  return escapeHtml(value).replaceAll('`', '&#096;');
+}
+
 function layout(title, body) {
   return `<!doctype html>
 <html lang="ru">
@@ -127,6 +131,71 @@ function layout(title, body) {
       object-fit: contain;
       flex: 0 0 auto;
       display: block;
+    }
+
+    .profile-head {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 18px;
+      align-items: start;
+    }
+
+    .public-profile-top {
+      align-items: flex-start;
+      gap: 22px;
+    }
+
+    .public-profile-info {
+      min-width: 0;
+    }
+
+    .public-member-status {
+      margin-top: 12px;
+    }
+
+    .public-profile-photo {
+      margin-left: auto;
+      width: 124px;
+      height: 124px;
+    }
+
+    .profile-photo,
+    .profile-photo-placeholder {
+      width: 124px;
+      height: 124px;
+      border-radius: 8px;
+      border: 1px solid var(--line);
+      background: #eef1f3;
+      object-fit: cover;
+      display: block;
+    }
+
+    .profile-photo-placeholder {
+      display: grid;
+      place-items: center;
+      color: var(--muted);
+      font-size: 13px;
+      text-align: center;
+      padding: 10px;
+    }
+
+    .photo-panel {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr);
+      gap: 16px;
+      align-items: start;
+      margin: 0 0 18px;
+    }
+
+    .photo-controls {
+      display: grid;
+      gap: 10px;
+      justify-items: start;
+    }
+
+    .photo-controls input[type="file"] {
+      max-width: 280px;
+      padding: 9px;
     }
 
     h1, h2, h3, p { margin-top: 0; }
@@ -258,6 +327,27 @@ function layout(title, body) {
       .brand-lockup { flex-direction: column; gap: 8px; }
       .brand-logo { max-width: 104px; max-height: 36px; }
       .public-org-mark { width: 32px; height: 32px; }
+      .profile-head,
+      .photo-panel {
+        grid-template-columns: 1fr;
+      }
+      .public-profile-top {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        align-items: start;
+      }
+      .public-profile-info {
+        grid-column: 1;
+      }
+      .public-profile-photo {
+        grid-column: 2;
+        margin-left: 0;
+      }
+      .profile-photo,
+      .profile-photo-placeholder {
+        width: 112px;
+        height: 112px;
+      }
       .list-head { align-items: stretch; flex-direction: column; }
       .pager {
         grid-template-columns: 1fr 1fr;
@@ -281,6 +371,16 @@ function layout(title, body) {
       .url-row { grid-template-columns: 1fr; }
       .result { grid-template-columns: 1fr; }
       h1 { font-size: 24px; }
+    }
+
+    @media (max-width: 520px) {
+      .public-profile-top {
+        grid-template-columns: 1fr;
+      }
+      .public-profile-photo {
+        grid-column: 1;
+        margin-top: 6px;
+      }
     }
   </style>
 </head>
@@ -384,6 +484,7 @@ function renderAdminPage() {
       const modal = document.querySelector('#confirmModal');
       const confirmYes = document.querySelector('#confirmYes');
       const confirmNo = document.querySelector('#confirmNo');
+      const PHOTO_PLACEHOLDER = '<div class="profile-photo-placeholder">Фото не загружено</div>';
 
       let selectedMemberNumber = '';
       let regenerateTarget = '';
@@ -518,6 +619,22 @@ function renderAdminPage() {
         ];
 
         const publicUrl = hasCard ? card.public_url : '';
+        const photoBlock = profile.photo_url
+          ? '<img class="profile-photo" src="' + escapeAttr(profile.photo_url) + '" alt="Фото участника">'
+          : PHOTO_PLACEHOLDER;
+        const photoPanel =
+          '<div class="photo-panel">' +
+            photoBlock +
+            '<div class="photo-controls">' +
+              '<h3>Фотография</h3>' +
+              '<input id="photoInput" type="file" accept="image/png,image/jpeg,image/webp">' +
+              '<div class="actions" style="margin-top: 0;">' +
+                '<button id="uploadPhotoButton" type="button">' + (profile.photo_url ? 'Заменить фото' : 'Загрузить фото') + '</button>' +
+                (profile.photo_url ? '<button id="deletePhotoButton" class="secondary" type="button">Удалить фото</button>' : '') +
+              '</div>' +
+              '<span id="photoStatus" class="muted">PNG, JPG или WebP до 5 МБ</span>' +
+            '</div>' +
+          '</div>';
         const qrBlock = hasCard
           ? '<div class="qr-block">' +
               '<h3>QR-код визитки</h3>' +
@@ -540,6 +657,7 @@ function renderAdminPage() {
 
         memberCard.innerHTML =
           '<h2>' + escapeHtml(profile.full_name) + '</h2>' +
+          photoPanel +
           '<div class="grid">' +
             fields.map(([label, value]) => '<div class="field"><span>' + escapeHtml(label) + '</span>' + escapeHtml(value) + '</div>').join('') +
           '</div>' +
@@ -548,6 +666,8 @@ function renderAdminPage() {
         const generateButton = document.querySelector('#generateButton');
         const regenerateButton = document.querySelector('#regenerateButton');
         const copyButton = document.querySelector('#copyButton');
+        const uploadPhotoButton = document.querySelector('#uploadPhotoButton');
+        const deletePhotoButton = document.querySelector('#deletePhotoButton');
 
         if (generateButton) {
           generateButton.addEventListener('click', () => generateCard(profile.member_number));
@@ -562,6 +682,14 @@ function renderAdminPage() {
 
         if (copyButton) {
           copyButton.addEventListener('click', copyPublicUrl);
+        }
+
+        if (uploadPhotoButton) {
+          uploadPhotoButton.addEventListener('click', () => uploadPhoto(profile.member_number));
+        }
+
+        if (deletePhotoButton) {
+          deletePhotoButton.addEventListener('click', () => deletePhoto(profile.member_number));
         }
       }
 
@@ -584,6 +712,41 @@ function renderAdminPage() {
         const original = button.textContent;
         button.textContent = 'Скопировано';
         setTimeout(() => { button.textContent = original; }, 1200);
+      }
+
+      async function uploadPhoto(memberNumber) {
+        const input = document.querySelector('#photoInput');
+        const status = document.querySelector('#photoStatus');
+
+        if (!input.files.length) {
+          status.textContent = 'Выберите файл фотографии';
+          return;
+        }
+
+        const formData = new FormData();
+        formData.append('photo', input.files[0]);
+        status.textContent = 'Загружаю...';
+
+        const response = await fetch('/admin/api/members/' + encodeURIComponent(memberNumber) + '/photo', {
+          method: 'POST',
+          body: formData
+        });
+        const data = await response.json();
+
+        if (!response.ok) {
+          status.textContent = data.error || 'Не удалось загрузить фото';
+          return;
+        }
+
+        renderMember(data);
+      }
+
+      async function deletePhoto(memberNumber) {
+        const response = await fetch('/admin/api/members/' + encodeURIComponent(memberNumber) + '/photo', {
+          method: 'DELETE'
+        });
+        const data = await response.json();
+        renderMember(data);
       }
 
       function closeModal() {
@@ -625,15 +788,18 @@ function renderPublicCardPage(profile, card) {
   return layout(`${profile.full_name} | ОВР`, `
     <main class="page">
       <section class="surface">
-        <div class="topbar">
-          <div>
+        <div class="topbar public-profile-top">
+          <div class="public-profile-info">
             <h1>${escapeHtml(profile.full_name)}</h1>
             <p class="muted public-org-lockup">
               <img class="public-org-mark" src="/assets/ovr-mark.png" alt="">
               <span>Общество врачей России</span>
             </p>
+            <div class="public-member-status">
+              <span class="badge ${profile.is_active_member ? 'ok' : 'warn'}">${escapeHtml(memberStatus)}</span>
+            </div>
           </div>
-          <span class="badge ${profile.is_active_member ? 'ok' : 'warn'}">${escapeHtml(memberStatus)}</span>
+          ${profile.photo_url ? `<img class="profile-photo public-profile-photo" src="${escapeAttr(profile.photo_url)}" alt="Фото участника">` : ''}
         </div>
         <div class="grid">
           <div class="field"><span>Членский номер</span>${escapeHtml(profile.member_number)}</div>

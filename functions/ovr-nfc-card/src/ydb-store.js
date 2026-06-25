@@ -225,6 +225,41 @@ async function upsertCard(config, memberNumber, cardData) {
   };
 }
 
+async function updateMemberPhoto(config, memberNumber, photoUrl) {
+  const driver = await getDriver(config);
+  const profile = await getProfile(driver, memberNumber);
+
+  if (!profile) {
+    return null;
+  }
+
+  const now = new Date();
+  await executeQuery(driver, `
+    DECLARE $member_number AS Utf8;
+    DECLARE $photo_url AS Utf8;
+    DECLARE $updated_at AS Timestamp;
+
+    UPDATE member_profiles
+    SET
+      photo_url = $photo_url,
+      updated_at = $updated_at
+    WHERE member_number = $member_number;
+  `, {
+    $member_number: typedValue('Utf8', memberNumber),
+    $photo_url: typedValue('Utf8', photoUrl),
+    $updated_at: typedValue('Timestamp', now)
+  });
+
+  return {
+    profile: {
+      ...profile,
+      photo_url: photoUrl,
+      updated_at: now.toISOString()
+    },
+    card: await getCardByMemberNumber(driver, memberNumber)
+  };
+}
+
 async function getProfile(driver, memberNumber) {
   const rows = await executeQuery(driver, `
     DECLARE $member_number AS Utf8;
@@ -395,5 +430,6 @@ module.exports = {
   listMembers,
   searchMembers,
   touchCardScan,
+  updateMemberPhoto,
   upsertCard
 };
