@@ -33,6 +33,17 @@ async function route(req, res, config) {
     return;
   }
 
+  if (req.method === 'GET' && pathname === '/assets/ovr-mark.png') {
+    const logoPath = resolvePublicAsset('assets/ovr-mark.png');
+    const logo = await fs.readFile(logoPath);
+    res.writeHead(200, {
+      'content-type': 'image/png',
+      'cache-control': 'public, max-age=86400'
+    });
+    res.end(logo);
+    return;
+  }
+
   if (req.method === 'GET' && pathname === '/admin') {
     await handleAdminPage(req, res, config);
     return;

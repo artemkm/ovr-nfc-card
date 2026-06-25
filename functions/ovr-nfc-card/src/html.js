@@ -1,3 +1,5 @@
+const { formatCardPrintNumber } = require('./member-numbers');
+
 function escapeHtml(value) {
   return String(value ?? '')
     .replaceAll('&', '&amp;')
@@ -112,6 +114,21 @@ function layout(title, body) {
       margin-bottom: 4px;
     }
 
+    .public-org-lockup {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      margin: 2px 0 0;
+    }
+
+    .public-org-mark {
+      width: 34px;
+      height: 34px;
+      object-fit: contain;
+      flex: 0 0 auto;
+      display: block;
+    }
+
     h1, h2, h3, p { margin-top: 0; }
     h1 { font-size: 28px; line-height: 1.15; margin-bottom: 8px; }
     h2 { font-size: 22px; margin-bottom: 14px; }
@@ -219,6 +236,7 @@ function layout(title, body) {
       .topbar { align-items: flex-start; flex-direction: column; }
       .brand-lockup { flex-direction: column; gap: 8px; }
       .brand-logo { max-width: 104px; max-height: 36px; }
+      .public-org-mark { width: 32px; height: 32px; }
       .list-head { align-items: stretch; flex-direction: column; }
       .pager {
         grid-template-columns: 1fr 1fr;
@@ -459,12 +477,14 @@ function renderAdminPage() {
         const profile = data.profile;
         const card = data.card;
         const hasCard = Boolean(card && card.status === 'active');
+        const cardPrintNumber = formatCardPrintNumber(profile.member_number);
 
         memberNfcBadge.className = 'badge ' + (hasCard ? 'ok' : 'no');
         memberNfcBadge.textContent = hasCard ? 'NFC есть' : 'NFC нет';
 
         const fields = [
           ['Членский номер', profile.member_number],
+          ['Номер на пластиковой карте', cardPrintNumber || 'Не задан'],
           ['Специальность', profile.specialty],
           ['Должность', profile.position],
           ['Город', profile.city],
@@ -551,12 +571,18 @@ function renderAdminPage() {
       function escapeAttr(value) {
         return escapeHtml(value).replaceAll('\`', '&#096;');
       }
+
+      function formatCardPrintNumber(memberNumber) {
+        const digits = String(memberNumber || '').replace(/\\D/g, '');
+        return digits.length === 8 ? digits.slice(0, 4) + ' ' + digits.slice(4) : '';
+      }
     </script>
   `);
 }
 
 function renderPublicCardPage(profile, card) {
   const memberStatus = profile.is_active_member ? 'Активный член общества' : 'Членство неактивно';
+  const cardPrintNumber = formatCardPrintNumber(profile.member_number);
 
   return layout(`${profile.full_name} | ОВР`, `
     <main class="page">
@@ -564,12 +590,16 @@ function renderPublicCardPage(profile, card) {
         <div class="topbar">
           <div>
             <h1>${escapeHtml(profile.full_name)}</h1>
-            <p class="muted">Общество врачей России</p>
+            <p class="muted public-org-lockup">
+              <img class="public-org-mark" src="/assets/ovr-mark.png" alt="">
+              <span>Общество врачей России</span>
+            </p>
           </div>
           <span class="badge ${profile.is_active_member ? 'ok' : 'warn'}">${escapeHtml(memberStatus)}</span>
         </div>
         <div class="grid">
           <div class="field"><span>Членский номер</span>${escapeHtml(profile.member_number)}</div>
+          ${cardPrintNumber ? `<div class="field"><span>Номер на пластиковой карте</span>${escapeHtml(cardPrintNumber)}</div>` : ''}
           <div class="field"><span>Специальность</span>${escapeHtml(profile.specialty)}</div>
           <div class="field"><span>Должность</span>${escapeHtml(profile.position)}</div>
           <div class="field"><span>Город</span>${escapeHtml(profile.city)}</div>

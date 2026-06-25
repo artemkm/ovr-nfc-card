@@ -1,6 +1,5 @@
--- Example seed data for a demo YDB database.
--- It loads demo member profiles only. NFC cards should be generated through
--- the admin UI after BASE_PUBLIC_URL is known.
+-- Switch demo member numbers to canonical OVR-0000-0000 format.
+-- The physical card print number is derived in the app as 0000 0000.
 
 UPSERT INTO member_profiles (
   member_number,
@@ -72,3 +71,31 @@ UPSERT INTO member_profiles (
   CurrentUtcTimestamp(),
   CurrentUtcTimestamp()
 );
+
+UPDATE member_cards
+SET member_number = "OVR-0000-0001"
+WHERE member_number = "10001";
+
+UPDATE member_cards
+SET member_number = "OVR-0000-0002"
+WHERE member_number = "10002";
+
+UPDATE member_cards
+SET member_number = "OVR-0000-0003"
+WHERE member_number = "10003";
+
+UPDATE member_cards
+SET member_number = "OVR-0000-0004"
+WHERE member_number = "10004";
+
+DELETE FROM member_profiles
+WHERE member_number = "10001";
+
+DELETE FROM member_profiles
+WHERE member_number = "10002";
+
+DELETE FROM member_profiles
+WHERE member_number = "10003";
+
+DELETE FROM member_profiles
+WHERE member_number = "10004";

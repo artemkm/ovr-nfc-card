@@ -1,4 +1,5 @@
 const fs = require('fs/promises');
+const { formatCardPrintNumber } = require('./member-numbers');
 
 const ACTIVE_STATUSES = new Set(['active']);
 const DEFAULT_PAGE_SIZE = 50;
@@ -38,6 +39,7 @@ async function searchMembers(config, query) {
     .filter((profile) => {
       const haystack = [
         profile.member_number,
+        formatCardPrintNumber(profile.member_number),
         profile.full_name,
         profile.specialty,
         profile.position,

@@ -40,6 +40,15 @@ It creates:
 
 `member_cards` stores the active public token and generated URL. The primary key is `token`, because public NFC scans resolve by token. A secondary index on `member_number` lets the admin UI find the current card for a member.
 
+`member_number` is stored in canonical form:
+
+```text
+OVR-0000-0000
+```
+
+The printed number on the physical NFC card is derived from it and is not stored
+separately. Example: `OVR-0000-0001` is printed as `0000 0001`.
+
 ## Apply Schema
 
 After creating a YDB database in Yandex Cloud, apply:
