@@ -641,7 +641,7 @@ function renderAdminPage() {
           ['Статус членства', profile.is_active_member ? 'Действующий член' : 'Членство неактивно']
         ];
 
-        const publicUrl = hasCard ? card.public_url : '';
+        const publicUrl = hasCard ? formatNfcWriterUrl(card.public_url) : '';
         const photoBlock = profile.photo_url
           ? '<img class="profile-photo" src="' + escapeAttr(profile.photo_url) + '" alt="Фото участника">'
           : PHOTO_PLACEHOLDER;
@@ -794,13 +794,16 @@ function renderAdminPage() {
         const digits = String(memberNumber || '').replace(/\\D/g, '');
         return digits.length === 8 ? digits.slice(0, 4) + ' ' + digits.slice(4) : '';
       }
+
+      function formatNfcWriterUrl(publicUrl) {
+        return String(publicUrl || '').replace(/^https?:\\/\\//i, '');
+      }
     </script>
   `);
 }
 
 function renderPublicCardPage(profile, card) {
   const memberStatus = profile.is_active_member ? 'Действующий член общества' : 'Членство неактивно';
-  const cardPrintNumber = formatCardPrintNumber(profile.member_number);
   const contactUrl = `/c/${encodeURIComponent(card.token)}/contact.vcf`;
   const qrBlock = card.qr_svg
     ? `<div class="qr-block">
@@ -827,7 +830,6 @@ function renderPublicCardPage(profile, card) {
         </div>
         <div class="grid">
           <div class="field"><span>Членский номер</span>${escapeHtml(profile.member_number)}</div>
-          ${cardPrintNumber ? `<div class="field"><span>Номер на пластиковой карте</span>${escapeHtml(cardPrintNumber)}</div>` : ''}
           <div class="field"><span>Научное звание</span>${escapeHtml(profile.scientific_title || '-')}</div>
           <div class="field"><span>Научная степень</span>${escapeHtml(profile.academic_degree || '-')}</div>
           <div class="field"><span>Должность</span>${escapeHtml(profile.position)}</div>
