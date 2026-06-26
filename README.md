@@ -4,8 +4,17 @@
 
 ## Локальный запуск
 
+Подробная инструкция для запуска с нуля:
+
+```text
+docs/local-setup.md
+```
+
+Короткий вариант, если Node.js и зависимости уже установлены:
+
 ```bash
 cd functions/ovr-nfc-card
+npm install
 npm run dev
 ```
 
