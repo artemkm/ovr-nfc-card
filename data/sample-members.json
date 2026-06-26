@@ -2,14 +2,14 @@
   "profiles": [
     {
       "member_number": "OVR-0000-0001",
-      "full_name": "Иванов Иван Сергеевич",
-      "specialty": "Кардиолог",
+      "full_name": "Янушевич Олег Олегович",
+      "specialty": "Стоматолог",
       "scientific_title": "профессор",
       "academic_degree": "доктор медицинских наук",
-      "position": "Заведующий кардиологическим отделением",
+      "position": "Ректор",
       "city": "Москва",
       "public_phone": "+7 495 000-00-01",
-      "public_email": "ivanov@example.ru",
+      "public_email": "rector@rosunimed.ru",
       "is_active_member": true,
       "created_at": "2026-06-25T00:00:00.000Z",
       "updated_at": "2026-06-25T00:00:00.000Z",
